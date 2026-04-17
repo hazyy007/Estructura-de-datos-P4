@@ -29,6 +29,9 @@ typedef enum {
     OK=1     /*!< OK output */
 } Status;
 
+typedef int (*P_ele_print) (FILE *f, const void *);
+typedef int (*P_ele_cmp)(const void *, const void *);
+
 #define MAX_QUEUE 8 /*!< Maximum number of elements in a queue */
 
 #endif /* TYPES_H_ */

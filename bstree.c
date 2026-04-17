@@ -275,3 +275,19 @@ Status tree_remove(BSTree *tree, const void *elem) {
     
     return OK;
 }
+
+Status tree_insert(BSTree *tree, const void *elem) {
+    return OK;
+}
+
+void *tree_find_min(BSTree *tree) {
+    return NULL;
+}
+
+void *tree_find_max(BSTree *tree) {
+    return NULL;
+}
+
+Bool tree_contains(BSTree *tree, const void *elem) {
+    return FALSE;
+}
