@@ -1,10 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -ansi -pedantic -g
-EXE1 = p3_e1
-EXE2 = p3_e2
-EXE3 = p3_e3
-EXE1S = p3_e1s
-EXE2S = p3_e2s
+EXE2 = p4_e2
+
 
 # Opciones de Valgrind
 VALGRIND = valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all
@@ -16,36 +13,12 @@ all: $(EXE1) $(EXE2) $(EXE3) $(EXE1S) $(EXE2S)
 # COMPILACIÓN DE EJECUTABLES
 # -----------------------------------------------------------
 
-# --- Ejercicio 1 ---
-$(EXE1): p3_e1.o queue.o radio.o music.o libstack.a
-	$(CC) $(CFLAGS) -o $@ $^
-
-p3_e1.o: p3_e1.c queue.h radio.h music.h types.h stack.h
-	$(CC) $(CFLAGS) -c p3_e1.c
-
 # --- Ejercicio 2 ---
-$(EXE2): p3_e2.o queue.o radio.o music.o libstack.a
+$(EXE2): p4_e2.o queue.o radio.o music.o libstack.a list.o
 	$(CC) $(CFLAGS) -o $@ $^
 
-p3_e2.o: p3_e2.c radio.h stack.h
-	$(CC) $(CFLAGS) -c p3_e2.c
-
-# --- Ejercicio 3 ---
-$(EXE3): p3_e3.o list.o radio.o music.o libstack.a queue.o
-	$(CC) $(CFLAGS) -o $@ $^
-
-p3_e3.o: p3_e3.c list.h radio.h music.h stack.h
-	$(CC) $(CFLAGS) -c p3_e3.c
-
-# Ejecutable 1 Variante List
-$(EXE1S): p3_e1.o queueList.o radio.o music.o libstack.a list.o
-	$(CC) $(CFLAGS) -o $@ $^
-
-# Ejecutable 2 Variante List
-$(EXE2S): p3_e2.o queueList.o radio.o music.o libstack.a list.o
-	$(CC) $(CFLAGS) -o $@ $^
-
-
+p4_e2.o: p4_e2.c radio.h stack.h list.h types.h
+	$(CC) $(CFLAGS) -c p4_e2.c
 # -----------------------------------------------------------
 # COMPILACIONES COMUNES (LIBRERÍAS)
 # -----------------------------------------------------------
