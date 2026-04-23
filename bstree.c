@@ -233,6 +233,50 @@ BSTNode* _bst_insert_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem, Stat
     return pn;
 }
 
+BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
+    int cmp;
+    BSTNode *ret_node = NULL;
+    BSTNode *aux_node = NULL;
+
+    if (!pn) {
+        return NULL;
+    }
+
+    cmp = cmp_elem(elem, pn->info);
+
+    if (cmp < 0) {
+        
+        pn->left = _bst_remove_rec(pn->left, elem, cmp_elem);
+    } else if (cmp > 0) {
+        
+        pn->right = _bst_remove_rec(pn->right, elem, cmp_elem);
+    } else {
+        
+        if (pn->left == NULL && pn->right == NULL) {
+            
+            _bst_node_free(pn);
+            return NULL;
+        } else if (pn->left == NULL) {
+            
+            ret_node = pn->right;
+            _bst_node_free(pn);
+            return ret_node;
+        } else if (pn->right == NULL) {
+           
+            ret_node = pn->left;
+            _bst_node_free(pn);
+            return ret_node;
+        } else {
+            
+            aux_node = _bst_find_min_rec(pn->right);
+            pn->info = aux_node->info;
+            pn->right = _bst_remove_rec(pn->right, aux_node->info, cmp_elem);
+            return pn;
+        }
+    }
+    return pn;
+}
+
 Status tree_insert(BSTree *tree, const void *elem) {
     Status st = ERROR;
     if (!tree || !elem) return ERROR;
