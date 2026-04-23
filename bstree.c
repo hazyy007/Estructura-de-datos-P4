@@ -209,85 +209,49 @@ int tree_postOrder(FILE *f, const BSTree *tree) {
 
 /**** TODO: find_min, find_max, insert, contains, remove ****/
 
-BSTNode* _bst_find_min_rec(BSTNode *pn) {
-    if (!pn) {
-        return NULL;
-    }
-    if (pn->left == NULL) {
-        return pn;
-    }
-    return _bst_find_min_rec(pn->left);
-}
-
-BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
+BSTNode* _bst_insert_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem, Status *st) {
     int cmp;
-    BSTNode *ret_node = NULL;
-    BSTNode *aux_node = NULL;
-
     if (!pn) {
-        return NULL;
+        BSTNode *new_node = _bst_node_new();
+        if (!new_node) {
+            *st = ERROR;
+            return NULL;
+        }
+        new_node->info = (void *)elem;
+        *st = OK;
+        return new_node;
     }
 
     cmp = cmp_elem(elem, pn->info);
-
     if (cmp < 0) {
-        
-        pn->left = _bst_remove_rec(pn->left, elem, cmp_elem);
+        pn->left = _bst_insert_rec(pn->left, elem, cmp_elem, st);
     } else if (cmp > 0) {
-        
-        pn->right = _bst_remove_rec(pn->right, elem, cmp_elem);
+        pn->right = _bst_insert_rec(pn->right, elem, cmp_elem, st);
     } else {
-        
-        if (pn->left == NULL && pn->right == NULL) {
-            
-            _bst_node_free(pn);
-            return NULL;
-        } else if (pn->left == NULL) {
-            
-            ret_node = pn->right;
-            _bst_node_free(pn);
-            return ret_node;
-        } else if (pn->right == NULL) {
-           
-            ret_node = pn->left;
-            _bst_node_free(pn);
-            return ret_node;
-        } else {
-            
-            aux_node = _bst_find_min_rec(pn->right);
-            pn->info = aux_node->info;
-            pn->right = _bst_remove_rec(pn->right, aux_node->info, cmp_elem);
-            return pn;
-        }
+        *st = OK; 
     }
     return pn;
 }
 
-Status tree_remove(BSTree *tree, const void *elem) {
-    if (!tree || !elem) {
-        return ERROR;
-    }
-    if (tree_contains(tree, elem) == FALSE) {
-        return OK; 
-    }
-
-    tree->root = _bst_remove_rec(tree->root, elem, tree->cmp_ele);
-    
-    return OK;
-}
-
 Status tree_insert(BSTree *tree, const void *elem) {
-    return OK;
-}
-
-void *tree_find_min(BSTree *tree) {
-    return NULL;
-}
-
-void *tree_find_max(BSTree *tree) {
-    return NULL;
+    Status st = ERROR;
+    if (!tree || !elem) return ERROR;
+    tree->root = _bst_insert_rec(tree->root, elem, tree->cmp_ele, &st);
+    return st;
 }
 
 Bool tree_contains(BSTree *tree, const void *elem) {
+    BSTNode *current;
+    int cmp;
+    
+    if (!tree || !elem) return FALSE;
+    
+    current = tree->root;
+    while (current) {
+        cmp = tree->cmp_ele(elem, current->info);
+        if (cmp == 0) return TRUE;
+        else if (cmp < 0) current = current->left;
+        else current = current->right;
+    }
     return FALSE;
 }
