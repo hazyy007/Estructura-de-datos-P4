@@ -299,3 +299,9 @@ Bool tree_contains(BSTree *tree, const void *elem) {
     }
     return FALSE;
 }
+
+Status tree_remove(BSTree *tree, const void *elem) {
+    if (!tree || !elem) return ERROR;
+    tree->root = _bst_remove_rec(tree->root, elem, tree->cmp_ele);
+    return OK;
+}
