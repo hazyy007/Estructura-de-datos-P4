@@ -113,7 +113,7 @@ int main(int argc, char const *argv[]) {
     r = radio_init();
     if (!r) mainCleanUp (EXIT_FAILURE, r, f_in);
     
-    // lee el fichero
+    /* lee el fichero */
     if  (radio_readFromFile(f_in, r) == ERROR) {
       fprintf(stdout, "Not file or File format incorrect\n");
       mainCleanUp (EXIT_FAILURE, r, f_in);
@@ -185,6 +185,8 @@ int main(int argc, char const *argv[]) {
     fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
   }
   
-  tree_destroy(t);
-  mainCleanUp (EXIT_SUCCESS, r, f_in);
+tree_destroy(t);
+mainCleanUp(EXIT_SUCCESS, r, f_in);
+
+return EXIT_SUCCESS;
 }

@@ -207,7 +207,81 @@ int tree_postOrder(FILE *f, const BSTree *tree) {
   return _bst_postOrder_rec(tree->root, f, tree->print_ele) + fprintf(f, "\n");
 }
 
-/**** TODO: find_min, find_max, insert, contains, remove ****/
+BSTNode *_bst_find_min_rec(BSTNode *pn) {
+  if (!pn) {
+    return NULL;
+  }
+
+  if (!pn->left) {
+    return pn;
+  }
+
+  return _bst_find_min_rec(pn->left);
+}
+
+BSTNode *_bst_find_max_rec(BSTNode *pn) {
+  if (!pn) {
+    return NULL;
+  }
+
+  if (!pn->right) {
+    return pn;
+  }
+
+  return _bst_find_max_rec(pn->right);
+}
+
+Bool _bst_contains_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
+  int cmp;
+
+  if (!pn || !elem || !cmp_elem) {
+    return FALSE;
+  }
+
+  cmp = cmp_elem(elem, pn->info);
+
+  if (cmp == 0) {
+    return TRUE;
+  }
+
+  if (cmp < 0) {
+    return _bst_contains_rec(pn->left, elem, cmp_elem);
+  }
+
+  return _bst_contains_rec(pn->right, elem, cmp_elem);
+}
+
+void *tree_find_min(BSTree *tree) {
+  BSTNode *node;
+
+  if (!tree || !tree->root) {
+    return NULL;
+  }
+
+  node = _bst_find_min_rec(tree->root);
+
+  if (!node) {
+    return NULL;
+  }
+
+  return node->info;
+}
+
+void *tree_find_max(BSTree *tree) {
+  BSTNode *node;
+
+  if (!tree || !tree->root) {
+    return NULL;
+  }
+
+  node = _bst_find_max_rec(tree->root);
+
+  if (!node) {
+    return NULL;
+  }
+
+  return node->info;
+}
 
 BSTNode* _bst_insert_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem, Status *st) {
     int cmp;
@@ -285,19 +359,11 @@ Status tree_insert(BSTree *tree, const void *elem) {
 }
 
 Bool tree_contains(BSTree *tree, const void *elem) {
-    BSTNode *current;
-    int cmp;
-    
-    if (!tree || !elem) return FALSE;
-    
-    current = tree->root;
-    while (current) {
-        cmp = tree->cmp_ele(elem, current->info);
-        if (cmp == 0) return TRUE;
-        else if (cmp < 0) current = current->left;
-        else current = current->right;
-    }
+  if (!tree || !elem) {
     return FALSE;
+  }
+
+  return _bst_contains_rec(tree->root, elem, tree->cmp_ele);
 }
 
 Status tree_remove(BSTree *tree, const void *elem) {

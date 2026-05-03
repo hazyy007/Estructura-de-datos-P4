@@ -9,29 +9,24 @@
  * 
  * @see 
  */
-
 #ifndef TYPES_H_
 #define TYPES_H_
 
-/**
- * @brief ADT Boolean
- */
+#include <stdio.h>
+
 typedef enum {
-    FALSE=0, /*!< False value */
-    TRUE=1  /*!< True value  */
+    FALSE=0,
+    TRUE=1
 } Bool;
 
-/** 
- * @brief ADT Status
- */
 typedef enum {
-    ERROR=0, /*!< To codify an ERROR output */
-    OK=1     /*!< OK output */
+    ERROR=0,
+    OK=1
 } Status;
 
 typedef int (*P_ele_print) (FILE *f, const void *);
 typedef int (*P_ele_cmp)(const void *, const void *);
 
-#define MAX_QUEUE 8 /*!< Maximum number of elements in a queue */
+#define MAX_QUEUE 8
 
-#endif /* TYPES_H_ */
+#endif

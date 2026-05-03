@@ -418,3 +418,33 @@ Status radio_depthSearch(Radio *r, long from_id, long to_id)
     stack_free(s);
     return OK;
 }
+
+Music **radio_getSongs(Radio *r)
+{
+    if (!r)
+    {
+        return NULL;
+    }
+
+    return r->songs;
+}
+
+int _radio_findmusicById(Radio *r, long id)
+{
+    int i;
+
+    if (!r)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < r->num_music; i++)
+    {
+        if (music_getId(r->songs[i]) == id)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
