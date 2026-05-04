@@ -1,32 +1,42 @@
 CC = gcc
 CFLAGS = -Wall -ansi -pedantic -g
+EXE1 = p4_e1
 EXE2 = p4_e2
-
 
 # Opciones de Valgrind
 VALGRIND = valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all
 
 # Regla principal para compilar todos los ejecutables
-all: $(EXE1) $(EXE2) $(EXE3) $(EXE1S) $(EXE2S)
+all: $(EXE1) $(EXE2)
 
 # -----------------------------------------------------------
 # COMPILACIÓN DE EJECUTABLES
 # -----------------------------------------------------------
 
-# --- Ejercicio 2 ---
-$(EXE2): p4_e2.o queue.o radio.o music.o libstack.a list.o
+# --- Ejercicio 1 ---
+$(EXE1): p4_e1.o bstree.o radio.o music.o queue.o list.o libstack.a
 	$(CC) $(CFLAGS) -o $@ $^
 
-p4_e2.o: p4_e2.c radio.h stack.h list.h types.h
+p4_e1.o: p4_e1.c bstree.h radio.h types.h
+	$(CC) $(CFLAGS) -c p4_e1.c
+
+# --- Ejercicio 2 ---
+$(EXE2): p4_e2.o bstree.o radio.o music.o queue.o list.o libstack.a
+	$(CC) $(CFLAGS) -o $@ $^
+
+p4_e2.o: p4_e2.c bstree.h radio.h types.h
 	$(CC) $(CFLAGS) -c p4_e2.c
 # -----------------------------------------------------------
-# COMPILACIONES COMUNES (LIBRERÍAS)
+# COMPILACIONES COMUNES (LIBRERÍAS Y TADs)
 # -----------------------------------------------------------
+
+bstree.o: bstree.c bstree.h list.h types.h
+	$(CC) $(CFLAGS) -c bstree.c
 
 queue.o: queue.c queue.h types.h
 	$(CC) $(CFLAGS) -c queue.c
 
-radio.o: radio.c radio.h music.h queue.h
+radio.o: radio.c radio.h music.h queue.h stack.h
 	$(CC) $(CFLAGS) -c radio.c
 
 music.o: music.c music.h types.h
@@ -41,43 +51,26 @@ queueList.o: queueList.c queue.h list.h types.h
 # -----------------------------------------------------------
 # REGLAS DE EJECUCIÓN NORMAL
 # -----------------------------------------------------------
-
-run1: $(EXE1)
-	./$(EXE1) radio.txt
-
+run1n: $(EXE1)
+	./$(EXE1) data_music_10.txt 8 normal
+run1s: $(EXE1)
+	./$(EXE1) data_music_10.txt 8 sorted
 run2: $(EXE2)
-	./$(EXE2) radio_bfs.txt 1 2
-
-run3: $(EXE3)
-	./$(EXE3) radio_bfs.txt
-
-# Ejecutar todos seguidos
-run: run1 run2 run3
-runs: $(EXE1S) $(EXE2S)
-	./$(EXE1S) radio.txt
-	./$(EXE2S) radio_bfs.txt 1 2
-
+	./$(EXE2) data_music_10.txt 3 7
+run: run1n run1s run2
 
 # -----------------------------------------------------------
 # REGLAS DE EJECUCIÓN CON VALGRIND
 # -----------------------------------------------------------
-
-runv1: $(EXE1)
-	$(VALGRIND) ./$(EXE1) radio.txt
-
+runv1n: $(EXE1)
+	$(VALGRIND) ./$(EXE1) data_music_10.txt 8 normal
+runv1s: $(EXE1)
+	$(VALGRIND) ./$(EXE1) data_music_10.txt 8 sorted
 runv2: $(EXE2)
-	$(VALGRIND) ./$(EXE2) radio_bfs.txt 1 10
-
-runv3: $(EXE3)
-	$(VALGRIND) ./$(EXE3) radio_bfs.txt
-
-# Ejecutar todos seguidos con Valgrind
-runv: runv1 runv2 runv3
-
-
+	$(VALGRIND) ./$(EXE2) data_music_10.txt 3 7
+runv: runv1n runv1s runv2
 # -----------------------------------------------------------
 # LIMPIEZA
 # -----------------------------------------------------------
-
 clean:
-	rm -f *.o $(EXE1) $(EXE2) $(EXE3) $(EXE1S) $(EXE2S)
+	rm -f *.o $(EXE1) $(EXE2) $(EXE3)

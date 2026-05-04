@@ -180,8 +180,25 @@ Status tree_insert(BSTree *tree, const void *elem);
  */
 Status tree_remove(BSTree *tree, const void *elem);
 
-/* NUEVAS */
+/**
+ * @brief Public function that returns a list with the elements in a given range.
+ * 
+ * @param tree Pointer to the Tree.
+ * @param min Pointer to the minimum element in the range.
+ * @param max Pointer to the maximum element in the range.
+ *
+ * @return Pointer to the list containing the elements in the range, NULL otherwise.
+ */
 List *tree_rangeSearch(const BSTree *tree, void *min, void *max);
+
+/**
+ * @brief Public function that counts the number of songs in a given Tree with a duration greater than a given value.
+ * 
+ * @param tree Pointer to the Tree.
+ * @param min_duration Minimum duration of the songs to be counted.
+ * 
+ * @return Number of songs in the Tree with a duration greater than min_duration, -1 if an error occurs.
+ */
 int tree_countLongSongs(const BSTree *tree, int min_duration);
 
 #endif

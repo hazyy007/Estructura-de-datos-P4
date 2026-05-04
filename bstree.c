@@ -371,3 +371,36 @@ Status tree_remove(BSTree *tree, const void *elem) {
     tree->root = _bst_remove_rec(tree->root, elem, tree->cmp_ele);
     return OK;
 }
+
+void _tree_rangeSearch_rec(BSTNode *node, void *min, void *max, List *list, P_ele_cmp cmp) {
+    int cmp_min, cmp_max;
+    
+    if (!node || !min || !max || !list || !cmp) return;
+
+    cmp_min = cmp(node->info, min);
+    cmp_max = cmp(node->info, max);
+
+    if (cmp_min > 0) {
+        _tree_rangeSearch_rec(node->left, min, max, list, cmp);
+    }
+
+    if (cmp_min >= 0 && cmp_max <= 0) {
+        list_pushBack(list, node->info);
+    }
+
+    if (cmp_max < 0) {
+        _tree_rangeSearch_rec(node->right, min, max, list, cmp);
+    }
+}
+
+List *tree_rangeSearch(const BSTree *tree, void *min, void *max) {
+    List *l = NULL;
+    
+    if (!tree || !tree->root || !min || !max) return NULL;
+
+    l = list_new();
+    if (!l) return NULL;
+    _tree_rangeSearch_rec(tree->root, min, max, l, tree->cmp_ele);
+    
+    return l;
+}
