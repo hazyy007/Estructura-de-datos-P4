@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "bstree.h"
+#include "music.h"
 
 /* START [_BSTNode] */
 typedef struct _BSTNode {
@@ -372,35 +373,31 @@ Status tree_remove(BSTree *tree, const void *elem) {
     return OK;
 }
 
-void _tree_rangeSearch_rec(BSTNode *node, void *min, void *max, List *list, P_ele_cmp cmp) {
-    int cmp_min, cmp_max;
-    
-    if (!node || !min || !max || !list || !cmp) return;
+int _tree_countLongSongs_rec(BSTNode *node, int min_duration)
+{
+  int count;
 
-    cmp_min = cmp(node->info, min);
-    cmp_max = cmp(node->info, max);
+  if (!node) {
+    return 0;
+  }
 
-    if (cmp_min > 0) {
-        _tree_rangeSearch_rec(node->left, min, max, list, cmp);
-    }
+  count = 0;
 
-    if (cmp_min >= 0 && cmp_max <= 0) {
-        list_pushBack(list, node->info);
-    }
+  if (music_getDuration((Music *)node->info) > min_duration) {
+    count = 1;
+  }
 
-    if (cmp_max < 0) {
-        _tree_rangeSearch_rec(node->right, min, max, list, cmp);
-    }
+  count += _tree_countLongSongs_rec(node->left, min_duration);
+  count += _tree_countLongSongs_rec(node->right, min_duration);
+
+  return count;
 }
 
-List *tree_rangeSearch(const BSTree *tree, void *min, void *max) {
-    List *l = NULL;
-    
-    if (!tree || !tree->root || !min || !max) return NULL;
+int tree_countLongSongs(const BSTree *tree, int min_duration)
+{
+  if (!tree || min_duration < 0) {
+    return -1;
+  }
 
-    l = list_new();
-    if (!l) return NULL;
-    _tree_rangeSearch_rec(tree->root, min, max, l, tree->cmp_ele);
-    
-    return l;
+  return _tree_countLongSongs_rec(tree->root, min_duration);
 }
