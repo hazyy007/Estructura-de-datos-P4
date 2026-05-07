@@ -401,3 +401,40 @@ int tree_countLongSongs(const BSTree *tree, int min_duration)
 
   return _tree_countLongSongs_rec(tree->root, min_duration);
 }
+
+void _tree_rangeSearch_rec(BSTNode *node, void *min, void *max, List *list, P_ele_cmp cmp)
+{
+  if (!node) {
+    return;
+  }
+
+  if (cmp(node->info, min) >= 0) {
+    _tree_rangeSearch_rec(node->left, min, max, list, cmp);
+  }
+
+  if (cmp(node->info, min) >= 0 && cmp(node->info, max) <= 0) {
+    list_pushBack(list, node->info);
+  }
+
+  if (cmp(node->info, max) <= 0) {
+    _tree_rangeSearch_rec(node->right, min, max, list, cmp);
+  }
+}
+
+List *tree_rangeSearch(const BSTree *tree, void *min, void *max)
+{
+  List *list;
+
+  if (!tree || !min || !max) {
+    return NULL;
+  }
+
+  list = list_new();
+  if (!list) {
+    return NULL;
+  }
+
+  _tree_rangeSearch_rec(tree->root, min, max, list, tree->cmp_ele);
+
+  return list;
+}

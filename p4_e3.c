@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 
   count = tree_countLongSongs(tree, min_duration);
 
-  printf("numero de canciones con duracion mayor a %d segundos: %d\n", min_duration, count);
+  printf("Número de canciones con duración mayor a %d segundos: %d\n", min_duration, count);
 
   tree_destroy(tree);
 
